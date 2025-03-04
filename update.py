@@ -10,7 +10,7 @@ from threading import Thread
 
 # Конфигурация обновлений
 update_server = "https://nskpc.ru/web/update/"
-version = "1.0.0.0"  # Текущая версия
+version = "1.0.0.1"  # Текущая версия
 
 
 class Updater:
@@ -130,8 +130,7 @@ def start_update_check():
     def check():
         updater = Updater()
         if updater.check_update():
-            if msgbox.askyesno("Обновление NSKPC", "Доступна новая версия! Установить сейчас?", icon='question'):
-                if updater.download_update():
-                    updater.apply_update()
+            if updater.download_update():
+                updater.apply_update()
 
     Thread(target=check, daemon=True).start()

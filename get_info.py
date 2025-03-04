@@ -3,16 +3,35 @@ import subprocess
 import socket
 import json
 import http.client
+import platform
+import psutil
+from time import sleep
 
 
 def get_anydesk_id():
     try:
-        config_path = os.path.expanduser("C://ProgramData//AnyDesk//system.conf")
+        anydesk_portable_path = "C://NSKPC//Удаленная помощь//AnyDesk.exe"
+        config_path = "C://ProgramData//AnyDesk//system.conf"
         if os.path.exists(config_path):
             with open(config_path, "r") as file:
                 for line in file:
                     if line.startswith("ad.anynet.id="):
                         return line.split("=")[1].strip()
+
+        if not os.path.exists(config_path):
+            anydesk_status = False
+            for proc in psutil.process_iter():
+                name = proc.name()
+                if name == "AnyDesk.exe":
+                    anydesk_status = True
+            if not anydesk_status:
+                subprocess.Popen(anydesk_portable_path)
+                sleep(6)
+
+
+            output = subprocess.run([anydesk_portable_path, "--get-id"],
+                                    capture_output=True, text=True)
+            return output.stdout.strip()
         return "Not Found"
     except Exception:
         return "Not Found"
@@ -20,9 +39,16 @@ def get_anydesk_id():
 
 def get_rustdesk_id():
     try:
-        output = subprocess.run([r"C://Program Files//RustDesk//rustdesk.exe", "--get-id"],
+        rustdesk_path = r"C:\Program Files\RustDesk\rustdesk.exe"
+        rustdesk_portable_path = r"C:\NSKPC\Удаленная помощь\rustdesk-1.2.7-x86_64.exe"
+        if os.path.exists(rustdesk_path):
+            path = rustdesk_path
+        else:
+            path = rustdesk_portable_path
+        output = subprocess.run([path, "--get-id"],
                                 capture_output=True, text=True)
-        return output.stdout.strip()
+        rust_desk_id = output.stdout.strip().split("\n")[-1]
+        return rust_desk_id
     except Exception:
         return "Not Found"
 
@@ -67,3 +93,13 @@ def get_computer_info():
         return "Not Found", "Not Found", "Not Found"
     except:
         return "Not Found", "Not Found", "Not Found"
+
+
+def get_os_info():
+    try:
+        os_full = platform.platform()
+        os_bit = "64-bit" if "PROGRAMFILES(X86)" in os.environ else "32-bit"
+        os_info = f'{os_full} {os_bit}'
+        return os_info
+    except:
+        return "Not Found"

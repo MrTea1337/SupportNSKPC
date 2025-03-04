@@ -12,7 +12,9 @@ from tkinter import messagebox
 from tkinter import ttk
 from pystray import Icon, Menu, MenuItem
 from PIL import Image, ImageTk
-from get_info import get_local_ip, get_rustdesk_id, get_anydesk_id, get_host_name, get_computer_info, get_global_ip
+
+import update
+from get_info import get_local_ip, get_rustdesk_id, get_anydesk_id, get_host_name, get_computer_info, get_global_ip, get_os_info
 from update import start_update_check
 from data import bot_token, chat_id, yougile_api, column_id
 
@@ -20,13 +22,15 @@ root = tk.Tk()
 root.withdraw()
 window_instance = None
 
+anydesk_id = get_anydesk_id()
+rustdesk_id = get_rustdesk_id()
+local_ip = get_local_ip()
+host_name = get_host_name()
+computer_name, company_name, full_company_name = get_computer_info()
+global_ip = get_global_ip()
+os_info = get_os_info()
+
 def send_to_telegram(name, phone, issue):
-    anydesk_id = get_anydesk_id()
-    rustdesk_id = get_rustdesk_id()
-    local_ip = get_local_ip()
-    host_name = get_host_name()
-    computer_name, company_name, full_company_name = get_computer_info()
-    global_ip = get_global_ip()
     message = (f"Имя: {name}\n"
                f"Телефон: {phone}\n"
                f"Проблема: {issue}\n"
@@ -36,6 +40,7 @@ def send_to_telegram(name, phone, issue):
                f"Локальный IP: {local_ip}\n"
                f"Глобальный IP: {global_ip}\n"
                f"Название устройства {computer_name}\n"
+               f"ОС: {os_info}\n"
                f"Компания: {company_name}\n"
                f"Полное имя компании {full_company_name}\n")
 
@@ -53,12 +58,6 @@ def send_to_telegram(name, phone, issue):
 
 
 def send_to_yougile(name, phone, issue):
-    anydesk_id = get_anydesk_id()
-    rustdesk_id = get_rustdesk_id()
-    local_ip = get_local_ip()
-    host_name = get_host_name()
-    computer_name, company_name, full_company_name = get_computer_info()
-    global_ip = get_global_ip()
 
     header = {
         'Content-Type': 'application/json',
@@ -98,6 +97,7 @@ def send_to_yougile(name, phone, issue):
                         f"Имя компьютера: {host_name}\n"
                         f"Глобальный IP: {global_ip}\n"
                         f"Локальный IP: {local_ip}\n"
+                        f"ОС: {os_info}\n"
                         f"Название устройства {computer_name}\n"
                         f"Компания: {company_name}\n"
                         f"Полное имя компании: {full_company_name}\n",
@@ -165,7 +165,12 @@ def create_window():
 
     def open_anydesk():
         try:
-            subprocess.Popen('C://Program Files (x86)//AnyDesk//AnyDesk.exe')
+            anydesk_path = 'C://Program Files (x86)//AnyDesk//AnyDesk.exe'
+            anydesk_path86 = 'C://Program Files//AnyDesk//AnyDesk.exe'
+            if os.path.exists(anydesk_path):
+                subprocess.Popen(anydesk_path)
+            else:
+                subprocess.Popen(anydesk_path86)
         except Exception as e:
             messagebox.showerror("Ошибка", f"Ошибка: {e}")
 
@@ -248,7 +253,7 @@ def create_window():
     internet_button = ttk.Button(window, text='Проверить\n  интернет', command=check_internet, style='internet.TButton')
     internet_button.place(x=110, y=575, width=80, height=45)
 
-    start_any_desk = ttk.Button(window, text='Запустить\n AnyDeesk', command=open_anydesk, style='anydesk.TButton')
+    start_any_desk = ttk.Button(window, text='Запустить\n AnyDesk', command=open_anydesk, style='anydesk.TButton')
     start_any_desk.place(x=200, y=575, width=80, height=45)
 
     whatapp_image = create_image(
@@ -267,6 +272,10 @@ def create_window():
     telegram_button = ttk.Button(window, image=telegram_tk, command=send_telegram)
     telegram_button.place(x=165, y=625, width=40, height=40)
 
+    if computer_name != 'Not found':
+        tk.Label(window, text=computer_name, font=('Arial', 10, 'italic'), foreground='gray').place(x=1, y=655)
+
+    tk.Label(window, text=f'ver.{update.version}', font=('Arial', 10, 'italic'), foreground='gray').place(x=230, y=655)
     def on_close():
         global window_instance
         window.destroy()
