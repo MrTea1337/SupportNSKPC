@@ -4,16 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b473bbd5-d2a3-4a01-a805-09423518d9df" name="Changes" comment="commit">
-      <change afterPath="$PROJECT_DIR$/.idea/SupprotNSKPC32.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="b473bbd5-d2a3-4a01-a805-09423518d9df" name="Changes" comment="Получение id удалённого доступа с портативных версий, добавил подпись версии и имени компьютера в интерфейсе">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/get_info.py" beforeDir="false" afterPath="$PROJECT_DIR$/get_info.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/update.py" beforeDir="false" afterPath="$PROJECT_DIR$/update.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/version_info.rc" beforeDir="false" afterPath="$PROJECT_DIR$/version_info.rc" afterDir="false" />
     </list>
@@ -116,7 +110,15 @@
       <option name="project" value="LOCAL" />
       <updated>1740474700608</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Получение id удалённого доступа с портативных версий, добавил подпись версии и имени компьютера в интерфейсе">
+      <option name="closed" value="true" />
+      <created>1741088551834</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1741088551834</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -132,6 +134,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="commit" />
-    <option name="LAST_COMMIT_MESSAGE" value="commit" />
+    <MESSAGE value="Получение id удалённого доступа с портативных версий, добавил подпись версии и имени компьютера в интерфейсе" />
+    <option name="LAST_COMMIT_MESSAGE" value="Получение id удалённого доступа с портативных версий, добавил подпись версии и имени компьютера в интерфейсе" />
   </component>
 </project>

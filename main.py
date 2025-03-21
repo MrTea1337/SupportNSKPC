@@ -14,9 +14,10 @@ from pystray import Icon, Menu, MenuItem
 from PIL import Image, ImageTk
 
 import update
-from get_info import get_local_ip, get_rustdesk_id, get_anydesk_id, get_host_name, get_computer_info, get_global_ip, get_os_info
+from get_info import (get_local_ip, get_rustdesk_id, get_anydesk_id, get_host_name, get_computer_info, get_global_ip,
+                      get_os_info)
 from update import start_update_check
-from data import bot_token, chat_id, yougile_api, column_id
+from data import bot_token, chat_id, yougile_api, column_id, board_id
 
 root = tk.Tk()
 root.withdraw()
@@ -29,6 +30,7 @@ host_name = get_host_name()
 computer_name, company_name, full_company_name = get_computer_info()
 global_ip = get_global_ip()
 os_info = get_os_info()
+
 
 def send_to_telegram(name, phone, issue):
     message = (f"Имя: {name}\n"
@@ -58,7 +60,36 @@ def send_to_telegram(name, phone, issue):
 
 
 def send_to_yougile(name, phone, issue):
+    def get_sticker():
+        try:
+            header = {
+                'Content-Type': 'application/json',
+                'Authorization': f'Bearer {yougile_api}'
+            }
+            url = "https://ru.yougile.com/api-v2/string-stickers"
 
+            sticker_request = {
+                "boardId": board_id,
+                "includeDeleted": True,
+                "limit": 100,
+                "name": "КОНТОРЫ"
+            }
+            data_json = json.dumps(sticker_request)
+            response = requests.get(url, data=data_json, headers=header, timeout=10)
+
+            for i in response.json()['content']:
+                if i['name'] == 'КОНТОРЫ':
+                    sticker_key = i['states']
+                    sticker_key_id = i['id']
+                    for sticker_state in sticker_key:
+                        if sticker_state['name'][0:3].upper() == company_name[0:3].upper():
+                            sticker_state_id = sticker_state['id']
+                            return sticker_key_id, sticker_state_id
+                    return sticker_key_id, 'a5c69f033676'
+        except Exception as e:
+            print(e)
+
+    sticker_key, sticker_state_id = get_sticker()
     header = {
         'Content-Type': 'application/json',
         'Authorization': f'Bearer {yougile_api}'
@@ -76,14 +107,17 @@ def send_to_yougile(name, phone, issue):
             "withTime": True,
             "history": [
                 "string"
-            ],
+            ]
+        },
+        "stickers": {
+            sticker_key: sticker_state_id
         }
     }
 
     data_json = json.dumps(data)
 
     try:
-        response = requests.post(url, data=data_json, headers=header, timeout=5)
+        response = requests.post(url, data=data_json, headers=header, timeout=10)
 
         if response.status_code == 201:
             task_id = response.json()['id']
@@ -104,7 +138,7 @@ def send_to_yougile(name, phone, issue):
                 "label": "Данные по заявке"
             }
             data_json = json.dumps(message)
-            requests.post(url, data=data_json, headers=header, timeout=5)
+            requests.post(url, data=data_json, headers=header, timeout=10)
 
             messagebox.showinfo("Успех", "Заявка успешно создана!")
         else:
@@ -146,7 +180,7 @@ def create_window():
 
     def check_internet():
         try:
-            response = requests.get('http://ya.ru', timeout=5)
+            response = requests.get('http://ya.ru', timeout=10)
             if response.ok:
                 messagebox.showinfo('Информация', 'Есть доступ в интернет.')
         except:
@@ -276,6 +310,7 @@ def create_window():
         tk.Label(window, text=computer_name, font=('Arial', 10, 'italic'), foreground='gray').place(x=1, y=655)
 
     tk.Label(window, text=f'ver.{update.version}', font=('Arial', 10, 'italic'), foreground='gray').place(x=230, y=655)
+
     def on_close():
         global window_instance
         window.destroy()

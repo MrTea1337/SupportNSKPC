@@ -10,7 +10,7 @@ from threading import Thread
 
 # Конфигурация обновлений
 update_server = "https://nskpc.ru/web/update/"
-version = "1.0.0.1"  # Текущая версия
+version = "1.1.0.0"  # Текущая версия
 
 
 class Updater:
